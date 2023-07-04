@@ -1,0 +1,21 @@
+{
+    "name": "project/utils",
+    "description": "This package aims to provide auxiliary tools such as string adjustments, different number formatting, different dat formatting, among others, for php developers",
+    "keywords": ["framework", "php", "utils"],
+    "license": "MIT",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Project\\Utils\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jorge Fabiano"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "nesbot/carbon": "^2.67.0"
+    }
+}
