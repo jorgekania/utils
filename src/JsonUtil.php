@@ -22,16 +22,16 @@ class JsonUtil
         $result = json_decode($string);
 
         match (json_last_error()) {
-            JSON_ERROR_NONE => $error = '', // JSON é válido // Nenhum erro ocorre,
-            JSON_ERROR_DEPTH            => $error = 'A profundidade máxima da pilha foi excedida.',
-            JSON_ERROR_STATE_MISMATCH   => $error = 'JSON inválido ou mal formado.',
-            JSON_ERROR_CTRL_CHAR        => $error = 'Erro de caractere de controle, possivelmente codificado incorretamente.',
-            JSON_ERROR_SYNTAX           => $error = 'Erro de sintaxe, JSON malformado.',
-            JSON_ERROR_UTF8             => $error = 'Caracteres UTF-8 malformados, possivelmente codificados incorretamente.',
-            JSON_ERROR_RECURSION        => $error = 'Uma ou mais referências recursivas no valor a ser codificado.',
-            JSON_ERROR_INF_OR_NAN       => $error = 'Um ou mais valores NAN ou INF no valor a ser codificado.',
+            JSON_ERROR_NONE => $error             = '', // JSON é válido // Nenhum erro ocorre,
+            JSON_ERROR_DEPTH            => $error            = 'A profundidade máxima da pilha foi excedida.',
+            JSON_ERROR_STATE_MISMATCH   => $error   = 'JSON inválido ou mal formado.',
+            JSON_ERROR_CTRL_CHAR        => $error        = 'Erro de caractere de controle, possivelmente codificado incorretamente.',
+            JSON_ERROR_SYNTAX           => $error           = 'Erro de sintaxe, JSON malformado.',
+            JSON_ERROR_UTF8             => $error             = 'Caracteres UTF-8 malformados, possivelmente codificados incorretamente.',
+            JSON_ERROR_RECURSION        => $error        = 'Uma ou mais referências recursivas no valor a ser codificado.',
+            JSON_ERROR_INF_OR_NAN       => $error       = 'Um ou mais valores NAN ou INF no valor a ser codificado.',
             JSON_ERROR_UNSUPPORTED_TYPE => $error = 'Foi fornecido um valor de um tipo que não pode ser codificado.',
-            default                     => $error = 'Ocorreu um erro JSON desconhecido.'
+            default                     => $error                     = 'Ocorreu um erro JSON desconhecido.'
         };
 
         if ($error !== '') {
@@ -76,6 +76,35 @@ class JsonUtil
             $result = self::searchKeyInArray($key, $parentArray);
         }
         return $result;
+    }
+
+    /**
+     * Finds the largest value within the json key
+     *
+     * @param array $json - json to be searched
+     * @param string $key - key to be analyzed
+     */
+    public static function findMaxValue(array $json, string $key)
+    {
+        if (isset($json[$key])) {
+            if (is_array($json[$key])) {
+                return max($json[$key]);
+            } else {
+                return $json[$key];
+            }
+        }
+
+        return array_reduce($json, function ($carry, $item) use ($key) {
+            if (is_array($item)) {
+                $itemMax = self::findMaxValue($item, $key);
+                return max($carry, $itemMax);
+            } else if (is_object($item)) {
+                $item = json_decode(json_encode($item), true);
+                return self::findMaxValue($item, $key);
+            } else {
+                return isset($item[$key]) ? max($carry, $item[$key]) : $carry;
+            }
+        }, 0);
     }
 
     private static function searchKeyInArray($key, $array)
