@@ -53,7 +53,6 @@ class MyNumbers
      * Format a number using abbreviated notation (e.g., 1K, 1M, 1B, etc.).
      *
      * @param float $number The number to format.
-     *
      * @return string The formatted abbreviated number string.
      */
     public static function formatNumberAbbreviated(float $number): string
@@ -214,6 +213,18 @@ class MyNumbers
             $power = ($bytes > 0) ? floor(log($bytes, $mod)) : 0;
         }
         return sprintf($format, $bytes / pow($mod, $power), $units[$power]);
+    }
+
+    /**
+     * Removes all special characters from
+     * a numeric string, keeping only the numbers
+     *
+     * @param string $number
+     * @return string
+     */
+    public static function onlyNumber(string $number = null)
+    {
+        return preg_replace('/[^0-9]/', '', $number);
     }
 
 }
