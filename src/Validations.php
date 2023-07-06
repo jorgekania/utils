@@ -229,6 +229,100 @@ class Validations
         return false;
     }
 
+    /**
+     * Checks if a string contains only letters.
+     *
+     * @param string $value
+     */
+    public static function validateAlpha(string $value): bool
+    {
+        if (preg_match('/^[a-zA-Z]+$/', $value)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Validates that a string contains only letters and numbers.
+     *
+     * @param string $value
+     */
+    public static function validateAlphaNumeric(string $value): bool
+    {
+        if (preg_match('/^[a-zA-Z0-9]+$/', $value)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a file has an allowed extension.
+     *
+     * @param string $filename | "document.pdf"
+     * @param array $allowedExtensions | ["pdf", "doc", "docx"]
+     */
+    public static function validateFileExtension(string $filename, array $allowedExtensions): bool
+    {
+        $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+
+        if (in_array($fileExtension, $allowedExtensions)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Validates the size of a file, checking that it is within acceptable limits.
+     *
+     * @param string $filename | "document.pdf"
+     * @param float $maxFileSize | 1024
+     */
+    public static function validateFileSize(string $filename, float $maxFileSize): bool
+    {
+        $fileSize = filesize($filename);
+
+        if ($fileSize <= $maxFileSize) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if an image has valid dimensions.
+     *
+     * @param string $filename | "image.jpg"
+     * @param float $maxWidth | 800
+     * @param float $maxHeight | 800
+     */
+    public static function validateImageDimensions(string $filename, float $maxWidth, float $maxHeight): bool
+    {
+        list($width, $height) = getimagesize($filename);
+
+        if ($width <= $maxWidth && $height <= $maxHeight) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether a string represents a valid time.
+     *
+     * @param string $time | "image.jpg"
+     */
+    public static function validateTime(string $time): bool
+    {
+        $pattern = '/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/';
+
+        if (preg_match($pattern, $time)) {
+            return true;
+        }
+
+        return false;
+    }
+
     private static function isValidFormat($date, $format)
     {
         $dateTime = DateTime::createFromFormat($format, $date);
